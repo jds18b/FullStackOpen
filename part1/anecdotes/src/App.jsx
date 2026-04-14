@@ -24,19 +24,40 @@ const App = () => {
   }
 
   const handleVote = () => {
-    const newVotes = {...votes}
+    const newVotes = [...votes]
     newVotes[selected] += 1
     setVotes(newVotes)
   }
 
+  // I wanted to do this with a simple indexOf expression, but my browser didn't seem to support that function
+  const findMax = () => {
+    let maxVal = 0
+    let maxIndex = 0
+    for(let i=0; i < votes.length; i++)
+    {
+      if(votes[i] > maxVal)
+      {
+        maxVal = votes[i]
+        maxIndex = i
+      }
+    }
+    return maxIndex
+  }
+  
+  let maxVotes = findMax()  
+
   return (
     <>
+    <h1>Anecdote of the day</h1>
     <div>
       {anecdotes[selected]}
     </div>
     <div>has {votes[selected]} votes</div>
     <Button text='vote' onClick={handleVote} />
     <Button text='next anecdote' onClick={handleNext} />
+    <h1>Anecdote with most votes</h1>
+    <div>{anecdotes[maxVotes]}</div>
+    <div>has {votes[maxVotes]} votes</div>
     </>
   )
 }
