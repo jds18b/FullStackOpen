@@ -2,7 +2,14 @@ import { useState } from 'react'
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
-const StatisticLine = ({ text, value }) => <p>{text} {value}</p>
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  )
+}
 
 const Statistics = ({ good, neutral, bad }) => {
   const getTotalScores = () => good + neutral + bad
@@ -10,25 +17,28 @@ const Statistics = ({ good, neutral, bad }) => {
   if(getTotalScores() === 0)
   {
     return (
-      <>
+      <tr>
         <h1>statistics</h1>
         <p>No feedback given</p>
-      </>
+      </tr>
     )
   }
 
-  // This feels like an inelegant way to handle this...
+  // This feels like an inelegant way to handle this
   let percentageString = `${(good/getTotalScores())*100} %`
 
   return (
     <>
       <h1>statistics</h1>
-      <StatisticLine text='good' value={good} />
-      <StatisticLine text='neutral' value={neutral} />
-      <StatisticLine text='bad' value={bad} />
-      <StatisticLine text='all' value={getTotalScores()} />
-      <StatisticLine text='average' value={(good - bad)/getTotalScores()} />
-      <StatisticLine text='positive' value={percentageString} />
+      <table>
+        <StatisticLine text='good' value={good} />
+        <StatisticLine text='neutral' value={neutral} />
+        <StatisticLine text='bad' value={bad} />
+        <StatisticLine text='all' value={getTotalScores()} />
+        <StatisticLine text='average' value={(good - bad)/getTotalScores()} />
+        <StatisticLine text='positive' value={percentageString} />
+      </table>
+      
     </>
   )
 }
