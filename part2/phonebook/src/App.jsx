@@ -1,33 +1,42 @@
 import { useState } from 'react'
 
-const Person = ({ person }) => <div>{person.name}</div>
+const Person = ({ person }) => <div>{person.name} {person.number}</div>
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const handleChangeName = (e) => {
     //console.log(e.target.value);
     setNewName(e.target.value)
   }
 
+  const handleChangeNumber = (e) => setNewNumber(e.target.value)
+
   const handleAddName = (e) => {
     e.preventDefault()
     const newPerson = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
     // Check against duplicates
     if(persons.find((person) => person.name === newPerson.name) !== undefined)
     {
       alert(`${newName} is already added to the phonebook`)
       setNewName('')
+      setNewNumber('')
     }
     else
     {
       setPersons(persons.concat(newPerson))
       setNewName('')
+      setNewNumber('')
     } 
   }
 
@@ -37,6 +46,9 @@ const App = () => {
       <form>
         <div>
           name: <input value={newName} onChange={handleChangeName} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleChangeNumber} />
         </div>
         <div>
           <button type="submit" onClick={handleAddName}>add</button>
