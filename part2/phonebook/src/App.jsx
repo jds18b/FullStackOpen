@@ -11,13 +11,13 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filterString, setFilterString] = useState('')
 
-  const handleChangeName = (e) => {
-    //console.log(e.target.value);
-    setNewName(e.target.value)
-  }
+  const handleChangeName = (e) => setNewName(e.target.value)
 
   const handleChangeNumber = (e) => setNewNumber(e.target.value)
+
+  const handleChangeFilter = (e) => setFilterString(e.target.value)
 
   const handleAddName = (e) => {
     e.preventDefault()
@@ -40,9 +40,19 @@ const App = () => {
     } 
   }
 
+  // If our search bar string is empty, we don't want to filter out anyone
+  // If we type in the search bar, we want to only show strings that contain that substring
+  const peopleToShow = filterString === '' ? persons : persons.filter((person) => 
+    person.name.toLowerCase().includes(filterString.toLowerCase())
+  )
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with: <input value={filterString} onChange={handleChangeFilter} />
+      </div>
+      <h2>add a new</h2>
       <form>
         <div>
           name: <input value={newName} onChange={handleChangeName} />
@@ -55,7 +65,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => <Person person={person} key={person.name} />)}
+      {peopleToShow.map((person) => <Person person={person} key={person.name} />)}
     </div>
   )
 }
