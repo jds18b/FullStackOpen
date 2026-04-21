@@ -37,6 +37,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
 
+  const baseURI = 'http://localhost:3001/persons'
+  
   const handleChangeName = (e) => setNewName(e.target.value)
 
   const handleChangeNumber = (e) => setNewNumber(e.target.value)
@@ -58,15 +60,18 @@ const App = () => {
     }
     else
     {
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      axios.post(baseURI, newPerson)
+        .then((response) => {
+          setPersons(persons.concat(newPerson))
+          setNewName('')
+          setNewNumber('')
+        })
     } 
   }
 
   useEffect(() => {
     axios
-    .get('http://localhost:3001/persons')
+    .get(baseURI)
     .then((response) => setPersons(response.data))
   },[]
   )
