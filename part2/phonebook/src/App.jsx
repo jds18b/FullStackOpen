@@ -55,9 +55,17 @@ const App = () => {
       number: newNumber
     }
     // Check against duplicates
-    if(persons.find((person) => person.name === newPerson.name) !== undefined)
+    const personToUpdate = persons.find((person) => person.name === newPerson.name)
+    if(personToUpdate !== undefined)
     {
-      alert(`${newName} is already added to the phonebook`)
+      if(confirm(`${personToUpdate.name} is already in the phonebook, replace the old number with a new one?`))
+      {
+        const updatedPerson = { ...personToUpdate, number: newNumber }
+        personService.updatePerson(updatedPerson)
+        .then(data => {
+          setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
+        })
+      }
       setNewName('')
       setNewNumber('')
     }
