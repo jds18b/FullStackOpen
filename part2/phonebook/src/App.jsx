@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react'
-import axios from "axios"
 import personService from './services/persons'
 
-const Person = ({ person }) => <div>{person.name} {person.number}</div>
+const Person = ({ person, deletePerson }) => 
+  <>
+    <div>
+      {person.name} {person.number} <button onClick={deletePerson}>Delete</button>
+    </div>
+  </>
 
 const SearchBar = ({ filterString, handleChangeFilter }) => 
   <div>
     filter shown with: <input value={filterString} onChange={handleChangeFilter} />
   </div>
 
-const PersonList = ({ persons }) => 
+const PersonList = ({ persons, deletePersonHandler }) => 
   <>
     <h2>Numbers</h2>
-    {persons.map(person => <Person person={person} key={person.name}/>)}
+    {persons.map(person => <Person person={person} key={person.id} deletePerson={() => deletePersonHandler(person.id)}/>)}
   </>
 
 const PersonForm = ({ newName, newNumber, handleChangeName, handleChangeNumber, handleAddName }) =>
@@ -68,6 +72,29 @@ const App = () => {
     } 
   }
 
+  const handleDeletePerson = (id) => {
+    // Make sure we find the person to delete
+    const person = persons.find(p => p.id === id)
+    if(person !== undefined)
+    {
+      // Get deletion confirmation
+      if(confirm(`Delete ${person.name}?`))
+      {
+        personService.deletePerson(person.id)
+        // In case of synchronization issues, this person might already be gone
+        .catch(()=>console.log('Could not delete person')
+        )
+        // Regardless of whether it was found on the server or not we want to remove it from the list
+        setPersons(persons.filter(p => p.id !== id))
+      }
+    }
+    else
+    {
+      console.log("Person not found")
+    }
+  }
+  
+
   useEffect(() => {
     personService.getAllPersons()
     .then((persons) => setPersons(persons))
@@ -86,7 +113,7 @@ const App = () => {
       <SearchBar filterString={filterString} handleChangeFilter={handleChangeFilter} />
       <PersonForm newName={newName} newNumber={newNumber} handleChangeName={handleChangeName} 
         handleChangeNumber={handleChangeNumber} handleAddName={handleAddName} />
-      <PersonList persons={peopleToShow} />
+      <PersonList persons={peopleToShow} deletePersonHandler={handleDeletePerson} />
     </div>
   )
 }

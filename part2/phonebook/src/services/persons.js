@@ -12,4 +12,10 @@ const addPerson = person =>
     return request.then(response => response.data)
 }
 
-export default { getAllPersons, addPerson }
+const deletePerson = id =>
+{
+    const url = `${baseURL}/${id}`
+    return axios.delete(url)
+}
+
+export default { getAllPersons, addPerson, deletePerson }
