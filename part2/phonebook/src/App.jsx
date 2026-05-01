@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Messages from './components/message'
 
 const Person = ({ person, deletePerson }) => 
   <>
@@ -41,6 +42,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
   
   const handleChangeName = (e) => setNewName(e.target.value)
 
@@ -64,6 +66,8 @@ const App = () => {
         personService.updatePerson(updatedPerson)
         .then(data => {
           setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
+          setSuccessMessage(`Updated ${data.name}`)
+          setTimeout(() => setSuccessMessage(null), 5000)
         })
       }
       setNewName('')
@@ -76,6 +80,8 @@ const App = () => {
         setPersons(persons.concat(person))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(`Added ${person.name}`)
+          setTimeout(() => setSuccessMessage(null), 5000)
       })
     } 
   }
@@ -117,6 +123,7 @@ const App = () => {
 
   return (
     <div>
+      <Messages.SuccessMessage message={successMessage} />
       <h2>Phonebook</h2>
       <SearchBar filterString={filterString} handleChangeFilter={handleChangeFilter} />
       <PersonForm newName={newName} newNumber={newNumber} handleChangeName={handleChangeName} 
