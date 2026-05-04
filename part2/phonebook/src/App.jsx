@@ -43,6 +43,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   
   const handleChangeName = (e) => setNewName(e.target.value)
 
@@ -68,6 +69,11 @@ const App = () => {
           setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
           setSuccessMessage(`Updated ${data.name}`)
           setTimeout(() => setSuccessMessage(null), 5000)
+        })
+        .catch(()=>{
+          setErrorMessage(`Information of ${updatedPerson.name} has already been removed from the server`)
+          setPersons(persons.filter(p => p.id !== updatedPerson.id))
+          setTimeout(() => setErrorMessage(null), 5000)
         })
       }
       setNewName('')
@@ -124,6 +130,7 @@ const App = () => {
   return (
     <div>
       <Messages.SuccessMessage message={successMessage} />
+      <Messages.ErrorMessage message={errorMessage} />
       <h2>Phonebook</h2>
       <SearchBar filterString={filterString} handleChangeFilter={handleChangeFilter} />
       <PersonForm newName={newName} newNumber={newNumber} handleChangeName={handleChangeName} 
