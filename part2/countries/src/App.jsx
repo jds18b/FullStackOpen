@@ -1,0 +1,70 @@
+import { useState, useEffect } from "react"
+import axios from "axios"
+
+const SearchBar = ({ searchString, handleChangeSearch }) => 
+<div>
+  find countries: <input value={searchString} onChange={handleChangeSearch} />
+</div>
+
+const CountryDisplay = ({ countries }) => {
+  if(countries.length >= 10)
+    return(
+      <div>Too many matches, specify another filter</div>
+    )
+  if(countries.length === 1)
+    return(<CountryDetails country={countries[0]} />)
+  if(countries.length === 0)
+    return(<div>No matches</div>)
+  return(
+    countries.map(country => <CountryListItem country={country} key={country.name.common}/>)
+  )
+}
+
+const CountryDetails = ({ country }) => 
+<>
+  <h1>{country.name.common}</h1>
+  <div>Capital {country.capital}</div>
+  <div>Area {country.area}</div>
+  <LanguageList languages={Object.values(country.languages)} />
+  <img src={country.flags.png} alt={country.flags.alt} />
+</>
+
+const LanguageList = ({ languages }) => 
+<>
+  <h1>Languages</h1>
+  <ul>
+    {languages.map(lang => <li key={lang}>{lang}</li>)}
+  </ul>
+</>
+
+const CountryListItem = ({ country }) =>
+  <div>{country.name.common}</div>
+
+const App = () => {
+  const [ allCountries, setAllCountries ] = useState([])
+  const [ searchString, setSearchString ] = useState('')
+
+  const handleChangeSearch = (e) => setSearchString(e.target.value)
+
+  // We can get a list of all the countries from a single API call and do any filtering we need locally
+  // This cuts down on unnessecary API calls since it's unlikely that the list of countries in the world
+  // will change while this app is open
+  useEffect(() => {
+    axios.get("https://studies.cs.helsinki.fi/restcountries/api/all")
+    .then((response) => setAllCountries(response.data))
+  }, [])
+  
+  const countries = allCountries.filter((country) => country.name.common.toLowerCase().includes(searchString.toLowerCase()))
+  console.log(countries)
+  
+
+  return (
+    <div>
+      <SearchBar searchString={searchString} handleChangeSearch={handleChangeSearch} />
+      <CountryDisplay countries={countries} />
+    </div>
+  )
+}
+
+
+export default App
