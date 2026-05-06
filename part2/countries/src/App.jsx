@@ -6,7 +6,7 @@ const SearchBar = ({ searchString, handleChangeSearch }) =>
   find countries: <input value={searchString} onChange={handleChangeSearch} />
 </div>
 
-const CountryDisplay = ({ countries }) => {
+const CountryDisplay = ({ countries, handleSetCountries }) => {
   if(countries.length >= 10)
     return(
       <div>Too many matches, specify another filter</div>
@@ -16,7 +16,7 @@ const CountryDisplay = ({ countries }) => {
   if(countries.length === 0)
     return(<div>No matches</div>)
   return(
-    countries.map(country => <CountryListItem country={country} key={country.name.common}/>)
+    countries.map(country => <CountryListItem country={country} handleSetCountries={() => handleSetCountries(country)} key={country.name.common}/>)
   )
 }
 
@@ -37,14 +37,24 @@ const LanguageList = ({ languages }) =>
   </ul>
 </>
 
-const CountryListItem = ({ country }) =>
-  <div>{country.name.common}</div>
+const CountryListItem = ({ country, handleSetCountries }) =>
+  <div>{country.name.common}<button onClick={handleSetCountries}>Show</button></div>
 
 const App = () => {
   const [ allCountries, setAllCountries ] = useState([])
   const [ searchString, setSearchString ] = useState('')
+  const [ countries, setCountries] = useState([])
 
-  const handleChangeSearch = (e) => setSearchString(e.target.value)
+  const handleChangeSearch = (e) => {
+    setSearchString(e.target.value)
+    setCountries(allCountries.filter((country) => country.name.common.toLowerCase().includes(e.target.value.toLowerCase())))
+  }
+
+  const handleSetCountries = (country) => 
+    {
+      setCountries([country])
+      setSearchString(country.name.common)
+    }
 
   // We can get a list of all the countries from a single API call and do any filtering we need locally
   // This cuts down on unnessecary API calls since it's unlikely that the list of countries in the world
@@ -53,15 +63,14 @@ const App = () => {
     axios.get("https://studies.cs.helsinki.fi/restcountries/api/all")
     .then((response) => setAllCountries(response.data))
   }, [])
-  
-  const countries = allCountries.filter((country) => country.name.common.toLowerCase().includes(searchString.toLowerCase()))
+   
   console.log(countries)
   
 
   return (
     <div>
       <SearchBar searchString={searchString} handleChangeSearch={handleChangeSearch} />
-      <CountryDisplay countries={countries} />
+      <CountryDisplay countries={countries} handleSetCountries={handleSetCountries} />
     </div>
   )
 }
