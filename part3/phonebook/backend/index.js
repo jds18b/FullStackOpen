@@ -1,4 +1,6 @@
+require('dotenv').config()
 const express = require("express")
+const Person = require('./models/person')
 const morgan = require("morgan")
 const app = express()
 
@@ -55,19 +57,15 @@ app.get("/", (req, res) =>{
 })
 
 app.get("/api/persons", (req, res) => {
-    res.json(persons)
+    Person.find({}).then(personRes => {
+        res.json(personRes)
+    })
 })
 
 app.get("/api/persons/:id", (req, res) => {
-    const id = req.params.id
-    const person = persons.find(p => p.id === id)
-
-    if(person) {
+    Person.findById(req.params.id).then(person => {
         res.json(person)
-    }
-    else {
-        res.status(404).end()
-    }
+    }) 
 })
 
 const generateId = () => {
@@ -114,7 +112,7 @@ app.get("/info", (req, res) => {
         <div>${Date()}</div>`)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
