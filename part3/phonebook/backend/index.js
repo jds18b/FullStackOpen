@@ -121,10 +121,11 @@ app.put("/api/persons/:id", (req, res, next) => {
 })
 
 app.get("/info", (req, res) => {
-    const numPersons = persons.length
-
-    res.send(`<div>Phonebook has info for ${numPersons} people</div>
+    Person.find({}).then(personRes => {
+        const numPersons = personRes.length
+        res.send(`<div>Phonebook has info for ${numPersons} people</div>
         <div>${Date()}</div>`)
+    })
 })
 
 const unknownEndpoint = (req, res) => {
