@@ -102,6 +102,11 @@ app.get("/info", (req, res) => {
         <div>${Date()}</div>`)
 })
 
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: "Unknown endpoint" })
+}
+app.use(unknownEndpoint)
+
 const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
