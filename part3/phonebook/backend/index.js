@@ -29,7 +29,7 @@ app.use(morgan((tokens, req, res) => {
 
 app.use(express.static('dist'))
 
-let persons = [
+/*let persons = [
     { 
       "id": "1",
       "name": "Arto Hellas", 
@@ -50,7 +50,7 @@ let persons = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
-]
+]*/
 
 app.get("/", (req, res) =>{
     res.send("<p>App is online</p>")
@@ -121,10 +121,11 @@ app.put("/api/persons/:id", (req, res, next) => {
 })
 
 app.get("/info", (req, res) => {
-    const numPersons = persons.length
-
-    res.send(`<div>Phonebook has info for ${numPersons} people</div>
+    Person.find({}).then(personRes => {
+        const numPersons = personRes.length
+        res.send(`<div>Phonebook has info for ${numPersons} people</div>
         <div>${Date()}</div>`)
+    })
 })
 
 const unknownEndpoint = (req, res) => {
