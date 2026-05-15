@@ -14,7 +14,12 @@ mongoose.connect(url, { family: 4 })
     })
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    // Our put method calls save instead of update, so no need to apply update validation
+    name: {
+        type: String,
+        minLength: [3, "Person name must be at least 3 characters"],
+        required: [true, "Must include person name"]
+    },
     number: String
 })
 
