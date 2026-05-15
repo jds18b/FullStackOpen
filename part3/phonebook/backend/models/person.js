@@ -20,7 +20,12 @@ const personSchema = new mongoose.Schema({
         minLength: [3, "Person name must be at least 3 characters"],
         required: [true, "Must include person name"]
     },
-    number: String
+    number: {
+        type: String,
+        minLength: [8, "Number must contain at least 8 characters"],
+        // No need for a custom validator if you're willing to use a little regex
+        match: [/^\d{2,3}-\d+$/, "Number must be a valid phone number (2 or 3 numbers, a -, then some amount of additional numbers)"]
+    }
 })
 
 personSchema.set('toJSON', {
