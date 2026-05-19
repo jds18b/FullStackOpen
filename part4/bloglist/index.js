@@ -3,6 +3,7 @@ const logger = require('./utils/logger')
 const express = require('express')
 const mongoose = require('mongoose')
 const blogsRouter = require('./controllers/blogs')
+const middleware = require('./utils/middleware')
 
 const app = express()
 
@@ -16,7 +17,12 @@ mongoose.connect(config.MONGODB_URI, { family: 4 })
 
 app.use(express.json())
 
+app.use(middleware.requestLogger)
+
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 const PORT = config.PORT || 3003
 app.listen(PORT, () => {
