@@ -35,7 +35,7 @@ describe('total likes', () => {
       title: "An Example Blog",
       author: "John Smith",
       url: "www.example.blog",
-      likes: 17,
+      likes: 18,
       __v: 0
     },
     {
@@ -88,7 +88,7 @@ describe('favorite blog', () => {
       title: "An Example Blog",
       author: "John Smith",
       url: "www.example.blog",
-      likes: 17,
+      likes: 18,
       __v: 0
     },
     {
@@ -112,5 +112,72 @@ describe('favorite blog', () => {
   test('when list is empty, returns undefined', () => {
     const result = listHelper.favoriteBlog([])
     assert.deepStrictEqual(result, undefined)
+  })
+})
+
+describe('most blogs', () => {
+  const listWithOneBlog = [
+    {
+      _id: '5a422aa71b54a676234d17f8',
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+      likes: 5,
+      __v: 0
+    }
+  ]
+
+  const listWithSeveralBlogs = [
+    {
+      _id: '5a422aa71b54a676234d17f8',
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+      likes: 5,
+      __v: 0
+    },
+    {
+      _id: "5a422b3a1b54a676234d17f9",
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      __v: 0
+    },
+    {
+      _id: "6a0bab8316b932646768c3eb",
+      title: "An Example Blog",
+      author: "John Smith",
+      url: "www.example.blog",
+      likes: 18,
+      __v: 0
+    },
+    {
+      _id: "6a0bb43a2deb67451b032a3f",
+      title: "Another Blog",
+      author: "Some Guy",
+      url: "www.someguy.com/myblog",
+      likes: 3,
+      __v: 0
+    }
+  ]
+
+  test('when list is empty, return undefined', () => {
+    const result = listHelper.mostBlogs([])
+    assert.deepStrictEqual(result, undefined)
+  })
+  test('when list has one entry, returns single author', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    assert.deepStrictEqual(result, {
+      name: 'Edsger W. Dijkstra',
+      blogs: 1
+    })
+  })
+  test('when list has several entires, return author with most blogs', () => {
+    const result = listHelper.mostBlogs(listWithSeveralBlogs)
+    assert.deepStrictEqual(result, {
+      name: 'Edsger W. Dijkstra',
+      blogs: 2
+    })
   })
 })
