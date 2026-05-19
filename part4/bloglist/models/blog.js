@@ -3,8 +3,14 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 
 const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
+  title: {
+    type: String,
+    required: [true, "Blog title is required"]
+  },
+  author: {
+    type: String,
+    required: [true, "Blog author is required"]
+  },
   url: String,
   likes: Number,
 })
