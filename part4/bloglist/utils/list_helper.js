@@ -27,12 +27,14 @@ const mostLikes = (blogs) => {
     if(blogs.length === 0) return undefined
     
     const authors = Object.groupBy(blogs, ({ author }) => author)
-    const [ ...authArray ] = Object.getOwnPropertyNames(authors)
-    const maxAuthor = authArray.reduce((prevMax, author) => totalLikes(authors[prevMax]) >= totalLikes(authors[author]) ? prevMax : author)
-    return {
-        name: maxAuthor,
-        likes: totalLikes(authors[maxAuthor])
-    }
+    const [ ...authArray ] = Object.getOwnPropertyNames(authors).map(author => {
+        return {
+            name: author,
+            likes: totalLikes(authors[author])
+        }
+    })
+    const maxAuthor = authArray.reduce((prevMax, author) => prevMax.likes >= author.likes ? prevMax : author)
+    return maxAuthor
 }
 
 module.exports = {
