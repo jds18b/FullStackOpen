@@ -25,6 +25,13 @@ test("The correct number of blogs are returned", async () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test("Blog objects are returned with correct id field value", async () => {
+    const blogs = await helper.blogsInDB()
+    const propNames = Object.getOwnPropertyNames(blogs[0])
+
+    assert(propNames.includes('id'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
