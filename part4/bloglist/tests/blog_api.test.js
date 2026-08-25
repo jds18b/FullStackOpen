@@ -52,6 +52,23 @@ test("Blogs can be added using the post route", async () => {
     assert(titles.includes("A new blog"))
 })
 
+test("Posted blogs with no likes value will default to 0", async() => {
+    const newBlog = {
+        title: "Blog without likes",
+        author: "Jane Doe"
+    }
+
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    
+    const finalBlogs = await helper.blogsInDB()
+    const addedBlog = finalBlogs.find(b => b.title === 'Blog without likes')
+
+    assert.strictEqual(addedBlog.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

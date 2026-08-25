@@ -12,7 +12,10 @@ const blogSchema = mongoose.Schema({
     required: [true, "Blog author is required"]
   },
   url: String,
-  likes: Number,
+  likes: {
+    type: Number,
+    default: 0
+  },
 })
 
 blogSchema.set('toJSON', {
