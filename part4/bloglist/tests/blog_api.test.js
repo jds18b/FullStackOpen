@@ -36,7 +36,8 @@ test("Blog objects are returned with correct id field value", async () => {
 test("Blogs can be added using the post route", async () => {
     const newBlog = {
         title: "A new blog",
-        author: "New Author"
+        author: "New Author",
+        url: 'newblog.blogland.org'
     }
 
     await api.post('/api/blogs')
@@ -55,6 +56,7 @@ test("Blogs can be added using the post route", async () => {
 test("Posted blogs with no likes value will default to 0", async() => {
     const newBlog = {
         title: "Blog without likes",
+        url: "gotnolikes.com",
         author: "Jane Doe"
     }
 
@@ -67,6 +69,29 @@ test("Posted blogs with no likes value will default to 0", async() => {
     const addedBlog = finalBlogs.find(b => b.title === 'Blog without likes')
 
     assert.strictEqual(addedBlog.likes, 0)
+})
+
+test("Blogs missing titles or urls will be rejected", async () => {
+  const blogNoURL = {
+    title: 'This blog has no url',
+    author: 'Johnathan NoURL'
+  }
+  const blogNoAuthor = {
+    title: 'This blog has no author',
+    url: 'blogswrittenbynobody.com'
+  }
+
+  await api.post('/api/blogs')
+    .send(blogNoURL)  
+    .expect(400)
+
+  await api.post('/api/blogs')
+    .send(blogNoAuthor)
+    .expect(400)
+
+  const finalBlogs = await helper.blogsInDB()
+
+  assert.strictEqual(finalBlogs.length, helper.initialBlogs.length)
 })
 
 after(async () => {
