@@ -5,6 +5,7 @@ const helper = require('./test_helper')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const blog = require('../models/blog')
 
 const api = supertest(app)
 
@@ -30,6 +31,25 @@ test("Blog objects are returned with correct id field value", async () => {
     const propNames = Object.getOwnPropertyNames(blogs[0])
 
     assert(propNames.includes('id'))
+})
+
+test("Blogs can be added using the post route", async () => {
+    const newBlog = {
+        title: "A new blog",
+        author: "New Author"
+    }
+
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const finalBlogs = await helper.blogsInDB()
+    const titles = finalBlogs.map(b => b.title)
+
+    assert.strictEqual(finalBlogs.length, helper.initialBlogs.length + 1)
+
+    assert(titles.includes("A new blog"))
 })
 
 after(async () => {
